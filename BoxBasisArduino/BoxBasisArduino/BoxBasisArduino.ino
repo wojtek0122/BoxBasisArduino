@@ -4,15 +4,21 @@
  Author:	Wojciech
 */
 
-// *** ArduinoController ***
-
-// This example expands the previous Receive example. The Arduino will now send back a status.
-// It adds a demonstration of how to:
-// - Handle received commands that do not have a function attached
-// - Send a command with a parameter to the PC
-// - Shows how to invoke on the UI thread
-
 #include <CmdMessenger.h>  // CmdMessenger
+
+// ------------- CONSTS -------------
+const int VOLTAGE		= A0;
+const int BUZZER		= A5;
+const int SW_BOX		= 2;
+const int SW_TESTER		= 4;
+const int COIL			= 5;
+const int MOTOR			= 6;
+const int NOK			= 8;
+const int OK			= 9;
+const int MOTOR_SPEED	= 250;
+const int QTY_TESTS		= 200;
+const int DELAYS		= 1;
+
 
 // Blinking led variables 
 const int kBlinkLed = 13;  // Pin of internal Led
