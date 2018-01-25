@@ -1,7 +1,7 @@
 /*
  Name:		BoxBasisArduino.ino
  Created:	1/25/2018 9:05:33 PM
- Author:	Asus
+ Author:	Wojciech
 */
 
 // the setup function runs once when you press reset or power the board
