@@ -1,9 +1,3 @@
-/*
- Name:		BoxBasisArduino.ino
- Created:	1/25/2018 9:05:33 PM
- Author:	Wojciech
-*/
-
 #include <CmdMessenger.h>  // CmdMessenger
 
 // ------------- CONSTS -------------
@@ -15,9 +9,26 @@ const int COIL			= 5;
 const int MOTOR			= 6;
 const int NOK			= 8;
 const int OK			= 9;
-const int MOTOR_SPEED	= 250;
-const int QTY_TESTS		= 200;
-const int DELAYS		= 1;
+
+// ------------- VARIABLES -------------
+int MOTOR_SPEED			= 250;
+int QTY_TESTS			= 200;
+int DELAYS				= 1;
+
+bool coilState = 0;
+
+// Attach a new CmdMessenger object to the default Serial port
+CmdMessenger cmdMessenger = CmdMessenger(Serial);
+
+// ------------- COMMANDS -------------
+enum
+{
+	kAcknowledge,
+	kError,
+	kSetLed, // Command to request led to be set in specific state
+	kSetLedFrequency,
+	kCoil,
+};
 
 
 // Blinking led variables 
@@ -29,18 +40,6 @@ unsigned long intervalOn;
 unsigned long intervalOff;
 unsigned long prevBlinkTime = 0;
 
-// Attach a new CmdMessenger object to the default Serial port
-CmdMessenger cmdMessenger = CmdMessenger(Serial);
-
-// This is the list of recognized commands. These can be commands that can either be sent or received. 
-// In order to receive, attach a callback function to these events
-enum
-{
-	kAcknowledge,
-	kError,
-	kSetLed, // Command to request led to be set in specific state
-	kSetLedFrequency,
-};
 
 // Callbacks define on which received commands we take action
 void attachCommandCallbacks()
@@ -49,6 +48,7 @@ void attachCommandCallbacks()
 	cmdMessenger.attach(OnUnknownCommand);
 	cmdMessenger.attach(kSetLed, OnSetLed);
 	cmdMessenger.attach(kSetLedFrequency, OnSetLedFrequency);
+	cmdMessenger.attach(kCoil, OnCoil);
 }
 
 // Called when a received command has no attached function
@@ -78,6 +78,12 @@ void OnSetLedFrequency()
 	cmdMessenger.sendCmd(kAcknowledge, ledFrequency);
 }
 
+void OnCoil()
+{
+	coilState = cmdMessenger.readBoolArg();
+	cmdMessenger.sendCmd(kCoil, coilState);
+}
+
 // Setup function
 void setup()
 {
@@ -97,6 +103,15 @@ void setup()
 
 	// set pin for blink LED
 	pinMode(kBlinkLed, OUTPUT);
+
+	// ----------------- SET PINS -----------------
+	pinMode(SW_BOX, INPUT_PULLUP);
+	pinMode(SW_TESTER, INPUT_PULLUP);
+	pinMode(COIL, OUTPUT);
+	pinMode(MOTOR, OUTPUT);
+	pinMode(OK, OUTPUT);
+	pinMode(NOK, OUTPUT);
+
 }
 
 // Loop function
@@ -106,10 +121,12 @@ void loop()
 	cmdMessenger.feedinSerialData();
 	delay(10);
 	blinkLed();
+	coil();
 }
 
 // Returns if it has been more than interval (in ms) ago. Used for periodic actions
-void blinkLed() {
+void blinkLed() 
+{
 	if (millis() - prevBlinkTime > intervalOff) {
 		// Turn led off during halfway interval
 		prevBlinkTime = millis();
@@ -119,4 +136,9 @@ void blinkLed() {
 		// Turn led on at end of interval (if led state is on)
 		digitalWrite(kBlinkLed, ledState ? HIGH : LOW);
 	}
+}
+
+void coil()
+{
+	digitalWrite(kBlinkLed, coilState ? HIGH : LOW);
 }
