@@ -1,22 +1,26 @@
 #include <CmdMessenger.h>  // CmdMessenger
 
 // ------------- CONSTS -------------
-const int VOLTAGE		= A0;
-const int BUZZER		= A5;
-const int SW_BOX		= 2;
-const int SW_TESTER		= 4;
-const int COIL			= 5;
-const int MOTOR			= 6;
-const int NOK			= 8;
-const int OK			= 9;
+const int VOLTAGE			= A0;
+const int BUZZER			= A5;
+const int SW_BOX			= 2;
+const int SW_TESTER			= 4;
+const int COIL				= 5;
+const int MOTOR				= 6;
+const int NOK				= 8;
+const int OK				= 9;
 
 // ------------- VARIABLES -------------
-int MOTOR_SPEED			= 250;
-int QTY_TESTS			= 200;
+int QTY_TESTS				= 200;
 
 //------------- STATES -------------
-bool coilState			= 0;
-bool motorState			= 0;
+bool coilState				= 0;
+unsigned long prevCoilTime	= 0;
+unsigned long intervalCoil	= 50;
+
+bool motorState				= 0;
+unsigned long prevMotorTime	= 0;
+unsigned long intervalMotor	= 250;
 
 // Attach a new CmdMessenger object to the default Serial port
 CmdMessenger cmdMessenger = CmdMessenger(Serial);
@@ -107,10 +111,28 @@ void loop()
 
 void coil()
 {
+	if (millis() - prevCoilTime > intervalCoil)
+	{
+		prevCoilTime = millis();
+		if (coilState)
+		{
+			coilState = false;
+			cmdMessenger.sendCmd(kCoil, coilState);
+		}
+	}
 	digitalWrite(COIL, coilState ? HIGH : LOW);
 }
 
 void motor()
 {
+	if (millis() - prevMotorTime > intervalMotor)
+	{
+		prevMotorTime = millis();
+		if (motorState)
+		{
+			motorState = false;
+			cmdMessenger.sendCmd(kMotor, motorState);
+		}
+	}
 	digitalWrite(MOTOR, motorState ? HIGH : LOW);
 }
