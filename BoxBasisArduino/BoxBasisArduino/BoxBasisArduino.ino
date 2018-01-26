@@ -56,6 +56,7 @@ void OnCoil()
 
 void OnMotor()
 {
+	motorState = cmdMessenger.readBoolArg();
 	cmdMessenger.sendCmd(kMotor, motorState);
 }
 
