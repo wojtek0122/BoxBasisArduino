@@ -27,6 +27,8 @@ bool ledNOKState				= 0;
 unsigned long prevLedNOKTime	= 0;
 int intervalLedNOK				= 100;
 
+float voltage					= 0;
+
 // Attach a new CmdMessenger object to the default Serial port
 CmdMessenger cmdMessenger = CmdMessenger(Serial);
 
@@ -42,6 +44,7 @@ enum
 	kMotorTime,
 	kLedOK,
 	kLedNOK,
+	kVoltage,
 };
 
 // Callbacks define on which received commands we take action
@@ -56,6 +59,7 @@ void attachCommandCallbacks()
 	cmdMessenger.attach(kMotorTime, OnMotorTime);
 	cmdMessenger.attach(kLedOK, OnLedOK);
 	cmdMessenger.attach(kLedNOK, OnLedNOK);
+	cmdMessenger.attach(kVoltage, OnVoltage);
 }
 
 // Called when a received command has no attached function
@@ -99,6 +103,12 @@ void OnLedNOK()
 {
 	ledNOKState = cmdMessenger.readBoolArg();
 	cmdMessenger.sendCmd(kLedNOK, ledNOKState);
+}
+
+void OnVoltage()
+{
+	voltage = analogRead(VOLTAGE) * (5.0 / 1023.0);
+	cmdMessenger.sendCmd(kVoltage, voltage);
 }
 
 // Setup function
