@@ -17,15 +17,15 @@ int intervalCoil				= 50;
 
 bool motorState					= 0;
 unsigned long prevMotorTime		= 0;
-unsigned long intervalMotor		= 250;
+int intervalMotor				= 250;
 
 bool ledOKState					= 0;
 unsigned long prevLedOKTime		= 0;
-unsigned long intervalLedOK		= 100;
+int intervalLedOK				= 100;
 
 bool ledNOKState				= 0;
 unsigned long prevLedNOKTime	= 0;
-unsigned long intervalLedNOK	= 100;
+int intervalLedNOK				= 100;
 
 // Attach a new CmdMessenger object to the default Serial port
 CmdMessenger cmdMessenger = CmdMessenger(Serial);
@@ -39,6 +39,7 @@ enum
 	kCoil,
 	kCoilTime,
 	kMotor,
+	kMotorTime,
 	kLedOK,
 	kLedNOK,
 };
@@ -52,6 +53,7 @@ void attachCommandCallbacks()
 	cmdMessenger.attach(kCoil, OnCoil);
 	cmdMessenger.attach(kCoilTime, OnCoilTime);
 	cmdMessenger.attach(kMotor, OnMotor);
+	cmdMessenger.attach(kMotorTime, OnMotorTime);
 	cmdMessenger.attach(kLedOK, OnLedOK);
 	cmdMessenger.attach(kLedNOK, OnLedNOK);
 }
@@ -79,6 +81,12 @@ void OnMotor()
 {
 	motorState = cmdMessenger.readBoolArg();
 	cmdMessenger.sendCmd(kMotor, motorState);
+}
+
+void OnMotorTime()
+{
+	intervalMotor = cmdMessenger.readInt16Arg();
+	cmdMessenger.sendCmd(kMotorTime, intervalMotor);
 }
 
 void OnLedOK()
@@ -126,20 +134,6 @@ void loop()
 	LedOK();
 	LedNOK();
 }
-
-// Returns if it has been more than interval (in ms) ago. Used for periodic actions
-/*void blinkLed() 
-{
-	if (millis() - prevBlinkTime > intervalOff) {
-		// Turn led off during halfway interval
-		prevBlinkTime = millis();
-		digitalWrite(kBlinkLed, LOW);
-	}
-	else if (millis() - prevBlinkTime > intervalOn) {
-		// Turn led on at end of interval (if led state is on)
-		digitalWrite(kBlinkLed, ledState ? HIGH : LOW);
-	}
-}*/
 
 // 4. Funkcja zmieniajaca dane pinu
 
