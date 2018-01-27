@@ -160,8 +160,8 @@ void setup()
 	cmdMessenger.sendCmd(kAcknowledge, "Arduino has started!");
 
 	// ----------------- SET PINS -----------------
-	pinMode(SW_BOX, INPUT_PULLUP);
-	pinMode(SW_TESTER, INPUT_PULLUP);
+	pinMode(SWITCHBOX, INPUT_PULLUP);
+	pinMode(SWITCHTESTER, INPUT_PULLUP);
 	pinMode(COIL, OUTPUT);
 	pinMode(MOTOR, OUTPUT);
 	pinMode(OK, OUTPUT);
