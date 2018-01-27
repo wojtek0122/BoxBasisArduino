@@ -107,7 +107,8 @@ void OnLedNOK()
 
 void OnVoltage()
 {
-	voltage = analogRead(VOLTAGE) * (5.0 / 1023.0);
+	voltage = analogRead(VOLTAGE);
+	voltage *= (5.0 / 1023.0);
 	cmdMessenger.sendCmd(kVoltage, voltage);
 }
 
