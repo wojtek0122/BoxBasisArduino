@@ -1,31 +1,36 @@
 #include <CmdMessenger.h>  // CmdMessenger
 
-// ------------- CONSTS -------------
-const int VOLTAGE			= A0;
-const int BUZZER			= A5;
-const int SW_BOX			= 2;
-const int SW_TESTER			= 4;
-const int COIL				= 5;
-const int MOTOR				= 6;
-const int NOK				= 8;
-const int OK				= 9;
+// -------------- CONSTS --------------
+const int VOLTAGE				= A0;
+const int BUZZER				= A5;
+const int SW_BOX				= 2;
+const int SW_TESTER				= 4;
+const int COIL					= 5;
+const int MOTOR					= 6;
+const int NOK					= 8;
+const int OK					= 9;
 
-// ------------- VARIABLES -------------
-int QTY_TESTS				= 200;
+//-------------- STATES --------------
+bool coilState					= 0;
+unsigned long prevCoilTime		= 0;
+unsigned long intervalCoil		= 50;
 
-//------------- STATES -------------
-bool coilState				= 0;
-unsigned long prevCoilTime	= 0;
-unsigned long intervalCoil	= 50;
+bool motorState					= 0;
+unsigned long prevMotorTime		= 0;
+unsigned long intervalMotor		= 250;
 
-bool motorState				= 0;
-unsigned long prevMotorTime	= 0;
-unsigned long intervalMotor	= 250;
+bool ledOKState					= 0;
+unsigned long prevLedOKTime		= 0;
+unsigned long intervalLedOK		= 100;
+
+bool ledNOKState				= 0;
+unsigned long prevLedNOKTime	= 0;
+unsigned long intervalLedNOK	= 100;
 
 // Attach a new CmdMessenger object to the default Serial port
 CmdMessenger cmdMessenger = CmdMessenger(Serial);
 
-// ------------- COMMANDS -------------
+// -------------- COMMANDS --------------
 //1. Dodaj komende do enuma
 enum
 {
@@ -33,6 +38,8 @@ enum
 	kError,
 	kCoil,
 	kMotor,
+	kLedOK,
+	kLedNOK,
 };
 
 // Callbacks define on which received commands we take action
@@ -43,6 +50,8 @@ void attachCommandCallbacks()
 	cmdMessenger.attach(OnUnknownCommand);
 	cmdMessenger.attach(kCoil, OnCoil);
 	cmdMessenger.attach(kMotor, OnMotor);
+	cmdMessenger.attach(kLedOK, OnLedOK);
+	cmdMessenger.attach(kLedNOK, OnLedNOK);
 }
 
 // Called when a received command has no attached function
@@ -64,6 +73,18 @@ void OnMotor()
 	cmdMessenger.sendCmd(kMotor, motorState);
 }
 
+void OnLedOK()
+{
+	ledOKState = cmdMessenger.readBoolArg();
+	cmdMessenger.sendCmd(kLedOK, ledOKState);
+}
+
+void OnLedNOK()
+{
+	ledNOKState = cmdMessenger.readBoolArg();
+	cmdMessenger.sendCmd(kLedNOK, ledNOKState);
+}
+
 // Setup function
 void setup()
 {
@@ -81,6 +102,9 @@ void setup()
 	pinMode(OK, OUTPUT);
 	pinMode(NOK, OUTPUT);
 
+	pinMode(13, OUTPUT);
+	digitalWrite(13, LOW);
+
 }
 
 // Loop function
@@ -91,6 +115,8 @@ void loop()
 	delay(10);
 	coil();
 	motor();
+	ledOK();
+	ledNOK();
 }
 
 // Returns if it has been more than interval (in ms) ago. Used for periodic actions
@@ -135,4 +161,32 @@ void motor()
 		}
 	}
 	digitalWrite(MOTOR, motorState ? HIGH : LOW);
+}
+
+void ledOK()
+{
+	if (millis() - prevLedOKTime > intervalLedOK)
+	{
+		prevLedOKTime = millis();
+		if (ledOKState)
+		{
+			ledOKState = false;
+			cmdMessenger.sendCmd(kLedOK, ledOKState);
+		}
+	}
+	digitalWrite(OK, ledOKState ? HIGH : LOW);
+}
+
+void ledNOK()
+{
+	if (millis() - prevLedNOKTime > intervalLedNOK)
+	{
+		prevLedNOKTime = millis();
+		if (ledNOKState)
+		{
+			ledNOKState = false;
+			cmdMessenger.sendCmd(kLedNOK, ledNOKState);
+		}
+	}
+	digitalWrite(OK, ledNOKState ? HIGH : LOW);
 }
