@@ -188,5 +188,5 @@ void ledNOK()
 			cmdMessenger.sendCmd(kLedNOK, ledNOKState);
 		}
 	}
-	digitalWrite(OK, ledNOKState ? HIGH : LOW);
+	digitalWrite(NOK, ledNOKState ? HIGH : LOW);
 }
