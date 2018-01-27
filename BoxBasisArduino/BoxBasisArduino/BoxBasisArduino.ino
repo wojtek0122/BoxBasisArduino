@@ -29,6 +29,12 @@ int intervalLedNOK				= 100;
 
 float voltage					= 0;
 
+bool buzzerState				= 0;
+bool buzzerOK					= 0;
+//int buzzerDelay					= 150;
+int buzzerFrequencyOK			= 4300;
+int buzzerFrequencyNOK			= 1300;
+
 // Attach a new CmdMessenger object to the default Serial port
 CmdMessenger cmdMessenger = CmdMessenger(Serial);
 
@@ -45,6 +51,7 @@ enum
 	kLedOK,
 	kLedNOK,
 	kVoltage,
+	kBuzzer,
 };
 
 // Callbacks define on which received commands we take action
@@ -60,6 +67,7 @@ void attachCommandCallbacks()
 	cmdMessenger.attach(kLedOK, OnLedOK);
 	cmdMessenger.attach(kLedNOK, OnLedNOK);
 	cmdMessenger.attach(kVoltage, OnVoltage);
+	cmdMessenger.attach(kBuzzer, OnBuzzer);
 }
 
 // Called when a received command has no attached function
@@ -112,6 +120,17 @@ void OnVoltage()
 	cmdMessenger.sendCmd(kVoltage, voltage);
 }
 
+void OnBuzzer()
+{
+	buzzerState = cmdMessenger.readBoolArg();
+	buzzerOK = cmdMessenger.readBoolArg();
+	
+	cmdMessenger.sendCmdStart(kBuzzer);
+	cmdMessenger.sendCmdArg(buzzerState);
+	cmdMessenger.sendCmdArg(buzzerOK);
+	cmdMessenger.sendCmdEnd();
+}
+
 // Setup function
 void setup()
 {
@@ -131,7 +150,6 @@ void setup()
 
 	pinMode(13, OUTPUT);
 	digitalWrite(13, LOW);
-
 }
 
 // Loop function
@@ -144,9 +162,10 @@ void loop()
 	Motor();
 	LedOK();
 	LedNOK();
+	Buzzer();
 }
 
-// 4. Funkcja zmieniajaca dane pinu
+// 4. Funkcja zmieniajaca dane pinu w czasie
 
 void Coil()
 {
@@ -202,4 +221,23 @@ void LedNOK()
 		}
 	}
 	digitalWrite(NOK, ledNOKState ? HIGH : LOW);
+}
+
+void Buzzer()
+{
+	if (buzzerState)
+	{
+		if (buzzerOK)
+		{
+			tone(BUZZER, buzzerFrequencyOK);
+		}
+		else
+		{
+			tone(BUZZER, buzzerFrequencyNOK);
+		}
+	}
+	else
+	{
+		noTone(BUZZER);
+	}
 }
