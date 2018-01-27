@@ -13,7 +13,7 @@ const int OK					= 9;
 //-------------- STATES --------------
 bool coilState					= 0;
 unsigned long prevCoilTime		= 0;
-unsigned long intervalCoil		= 50;
+int intervalCoil				= 50;
 
 bool motorState					= 0;
 unsigned long prevMotorTime		= 0;
