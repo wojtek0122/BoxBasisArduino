@@ -37,6 +37,7 @@ enum
 	kAcknowledge,
 	kError,
 	kCoil,
+	kCoilTime,
 	kMotor,
 	kLedOK,
 	kLedNOK,
@@ -49,6 +50,7 @@ void attachCommandCallbacks()
 	// Attach callback methods
 	cmdMessenger.attach(OnUnknownCommand);
 	cmdMessenger.attach(kCoil, OnCoil);
+	cmdMessenger.attach(kCoilTime, OnCoilTime);
 	cmdMessenger.attach(kMotor, OnMotor);
 	cmdMessenger.attach(kLedOK, OnLedOK);
 	cmdMessenger.attach(kLedNOK, OnLedNOK);
@@ -65,6 +67,12 @@ void OnCoil()
 {
 	coilState = cmdMessenger.readBoolArg();
 	cmdMessenger.sendCmd(kCoil, coilState);
+}
+
+void OnCoilTime()
+{
+	intervalCoil = cmdMessenger.readInt16Arg();
+	cmdMessenger.sendCmd(kCoilTime, intervalCoil);
 }
 
 void OnMotor()
@@ -113,10 +121,10 @@ void loop()
 	// Process incoming serial data, and perform callbacks
 	cmdMessenger.feedinSerialData();
 	delay(10);
-	coil();
-	motor();
-	ledOK();
-	ledNOK();
+	Coil();
+	Motor();
+	LedOK();
+	LedNOK();
 }
 
 // Returns if it has been more than interval (in ms) ago. Used for periodic actions
@@ -135,7 +143,7 @@ void loop()
 
 // 4. Funkcja zmieniajaca dane pinu
 
-void coil()
+void Coil()
 {
 	if (millis() - prevCoilTime > intervalCoil)
 	{
@@ -149,7 +157,7 @@ void coil()
 	digitalWrite(COIL, coilState ? HIGH : LOW);
 }
 
-void motor()
+void Motor()
 {
 	if (millis() - prevMotorTime > intervalMotor)
 	{
@@ -163,7 +171,7 @@ void motor()
 	digitalWrite(MOTOR, motorState ? HIGH : LOW);
 }
 
-void ledOK()
+void LedOK()
 {
 	if (millis() - prevLedOKTime > intervalLedOK)
 	{
@@ -177,7 +185,7 @@ void ledOK()
 	digitalWrite(OK, ledOKState ? HIGH : LOW);
 }
 
-void ledNOK()
+void LedNOK()
 {
 	if (millis() - prevLedNOKTime > intervalLedNOK)
 	{
