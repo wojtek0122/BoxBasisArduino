@@ -3,8 +3,8 @@
 // -------------- CONSTS --------------
 const int VOLTAGE				= A0;
 const int BUZZER				= A5;
-const int SW_BOX				= 2;
-const int SW_TESTER				= 4;
+const int SWITCHBOX				= 2;
+const int SWITCHTESTER			= 4;
 const int COIL					= 5;
 const int MOTOR					= 6;
 const int NOK					= 8;
@@ -29,6 +29,9 @@ int intervalLedNOK				= 100;
 
 float voltage					= 0;
 
+bool switchBoxState				= 0;
+bool switchTesterState			= 0;
+
 bool buzzerState				= 0;
 bool buzzerOK					= 0;
 //int buzzerDelay					= 150;
@@ -51,6 +54,8 @@ enum
 	kLedOK,
 	kLedNOK,
 	kVoltage,
+	kSwitchBox,
+	kSwitchTester,
 	kBuzzer,
 };
 
@@ -67,6 +72,8 @@ void attachCommandCallbacks()
 	cmdMessenger.attach(kLedOK, OnLedOK);
 	cmdMessenger.attach(kLedNOK, OnLedNOK);
 	cmdMessenger.attach(kVoltage, OnVoltage);
+	cmdMessenger.attach(kSwitchBox, OnSwitchBox);
+	cmdMessenger.attach(kSwitchTester, OnSwitchTester);
 	cmdMessenger.attach(kBuzzer, OnBuzzer);
 }
 
@@ -118,6 +125,18 @@ void OnVoltage()
 	voltage = analogRead(VOLTAGE);
 	voltage *= (5.0 / 1023.0);
 	cmdMessenger.sendCmd(kVoltage, voltage);
+}
+
+void OnSwitchBox()
+{
+	switchBoxState = digitalRead(SWITCHBOX);
+	cmdMessenger.sendCmd(kSwitchBox, switchBoxState);
+}
+
+void OnSwitchTester()
+{
+	switchTesterState = digitalRead(SWITCHTESTER);
+	cmdMessenger.sendCmd(kSwitchTester, switchTesterState);
 }
 
 void OnBuzzer()
