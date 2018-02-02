@@ -1,7 +1,8 @@
 #include <CmdMessenger.h>  // CmdMessenger
 
 // -------------- CONSTS --------------
-const int VOLTAGE				= A0;
+const int PSUVOLTAGE			= A0;
+const int BASISVOLTAGE			= A2;
 const int BUZZER				= A5;
 const int SWITCHBOX				= 2;
 const int SWITCHTESTER			= 4;
@@ -27,7 +28,7 @@ bool ledNOKState				= 0;
 unsigned long prevLedNOKTime	= 0;
 int intervalLedNOK				= 100;
 
-float voltage					= 0;
+float psuvoltage				= 0;
 
 bool switchBoxState				= 0;
 bool switchTesterState			= 0;
@@ -53,7 +54,7 @@ enum
 	kMotorTime,
 	kLedOK,
 	kLedNOK,
-	kVoltage,
+	kPSUVoltage,
 	kSwitchBox,
 	kSwitchTester,
 	kBuzzer,
@@ -71,7 +72,7 @@ void attachCommandCallbacks()
 	cmdMessenger.attach(kMotorTime, OnMotorTime);
 	cmdMessenger.attach(kLedOK, OnLedOK);
 	cmdMessenger.attach(kLedNOK, OnLedNOK);
-	cmdMessenger.attach(kVoltage, OnVoltage);
+	cmdMessenger.attach(kPSUVoltage, OnPSUVoltage);
 	cmdMessenger.attach(kSwitchBox, OnSwitchBox);
 	cmdMessenger.attach(kSwitchTester, OnSwitchTester);
 	cmdMessenger.attach(kBuzzer, OnBuzzer);
@@ -120,11 +121,11 @@ void OnLedNOK()
 	cmdMessenger.sendCmd(kLedNOK, ledNOKState);
 }
 
-void OnVoltage()
+void OnPSUVoltage()
 {
-	voltage = analogRead(VOLTAGE);
-	voltage *= (5.0 / 1023.0);
-	cmdMessenger.sendCmd(kVoltage, voltage);
+	psuvoltage = analogRead(PSUVOLTAGE);
+	psuvoltage *= (5.0 / 1023.0);
+	cmdMessenger.sendCmd(kPSUVoltage, psuvoltage);
 }
 
 void OnSwitchBox()
