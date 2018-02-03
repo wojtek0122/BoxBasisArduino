@@ -234,7 +234,7 @@ void LedOK()
 		if (ledOKState)
 		{
 			ledOKState = false;
-			cmdMessenger.sendCmd(kLedOK, ledOKState);
+			//cmdMessenger.sendCmd(kLedOK, ledOKState);
 		}
 	}
 	digitalWrite(OK, ledOKState ? HIGH : LOW);
@@ -248,7 +248,7 @@ void LedNOK()
 		if (ledNOKState)
 		{
 			ledNOKState = false;
-			cmdMessenger.sendCmd(kLedNOK, ledNOKState);
+			//cmdMessenger.sendCmd(kLedNOK, ledNOKState);
 		}
 	}
 	digitalWrite(NOK, ledNOKState ? HIGH : LOW);
