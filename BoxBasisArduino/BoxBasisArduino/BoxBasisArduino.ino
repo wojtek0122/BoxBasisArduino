@@ -115,13 +115,13 @@ void OnMotorTime()
 void OnLedOK()
 {
 	ledOKState = cmdMessenger.readBoolArg();
-	cmdMessenger.sendCmd(kLedOK, ledOKState);
+	//cmdMessenger.sendCmd(kLedOK, ledOKState);
 }
 
 void OnLedNOK()
 {
 	ledNOKState = cmdMessenger.readBoolArg();
-	cmdMessenger.sendCmd(kLedNOK, ledNOKState);
+	//cmdMessenger.sendCmd(kLedNOK, ledNOKState);
 }
 
 void OnPSUVoltage()
@@ -155,10 +155,10 @@ void OnBuzzer()
 	buzzerState = cmdMessenger.readBoolArg();
 	buzzerOK = cmdMessenger.readBoolArg();
 	
-	cmdMessenger.sendCmdStart(kBuzzer);
-	cmdMessenger.sendCmdArg(buzzerState);
-	cmdMessenger.sendCmdArg(buzzerOK);
-	cmdMessenger.sendCmdEnd();
+	//cmdMessenger.sendCmdStart(kBuzzer);
+	//cmdMessenger.sendCmdArg(buzzerState);
+	//cmdMessenger.sendCmdArg(buzzerOK);
+	//cmdMessenger.sendCmdEnd();
 }
 
 // Setup function
