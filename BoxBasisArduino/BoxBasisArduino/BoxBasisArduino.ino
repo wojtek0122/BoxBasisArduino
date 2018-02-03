@@ -28,7 +28,8 @@ bool ledNOKState				= 0;
 unsigned long prevLedNOKTime	= 0;
 int intervalLedNOK				= 100;
 
-float psuvoltage				= 0;
+float psuVoltage				= 0;
+float basisVoltage				= 0;
 
 bool switchBoxState				= 0;
 bool switchTesterState			= 0;
@@ -55,6 +56,7 @@ enum
 	kLedOK,
 	kLedNOK,
 	kPSUVoltage,
+	kBasisVoltage,
 	kSwitchBox,
 	kSwitchTester,
 	kBuzzer,
@@ -73,6 +75,7 @@ void attachCommandCallbacks()
 	cmdMessenger.attach(kLedOK, OnLedOK);
 	cmdMessenger.attach(kLedNOK, OnLedNOK);
 	cmdMessenger.attach(kPSUVoltage, OnPSUVoltage);
+	cmdMessenger.attach(kBasisVoltage, OnBasisVoltage);
 	cmdMessenger.attach(kSwitchBox, OnSwitchBox);
 	cmdMessenger.attach(kSwitchTester, OnSwitchTester);
 	cmdMessenger.attach(kBuzzer, OnBuzzer);
@@ -123,9 +126,16 @@ void OnLedNOK()
 
 void OnPSUVoltage()
 {
-	psuvoltage = analogRead(PSUVOLTAGE);
-	psuvoltage *= (5.0 / 1023.0);
-	cmdMessenger.sendCmd(kPSUVoltage, psuvoltage);
+	psuVoltage = analogRead(PSUVOLTAGE);
+	psuVoltage *= (25.0 / 1023.0);
+	cmdMessenger.sendCmd(kPSUVoltage, psuVoltage);
+}
+
+void OnBasisVoltage()
+{
+	basisVoltage = analogRead(BASISVOLTAGE);
+	basisVoltage *= (25.0 / 1023.0);
+	cmdMessenger.sendCmd(kBasisVoltage, basisVoltage);
 }
 
 void OnSwitchBox()
@@ -165,8 +175,9 @@ void setup()
 	pinMode(SWITCHTESTER, INPUT_PULLUP);
 	pinMode(COIL, OUTPUT);
 	pinMode(MOTOR, OUTPUT);
-	pinMode(OK, OUTPUT);
 	pinMode(NOK, OUTPUT);
+	pinMode(OK, OUTPUT);
+	// -------------------------------------
 
 	pinMode(13, OUTPUT);
 	digitalWrite(13, LOW);
