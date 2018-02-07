@@ -14,7 +14,7 @@ const int OK					= 9;
 //-------------- STATES --------------
 bool coilState					= 0;
 unsigned long prevCoilTime		= 0;
-int intervalCoil				= 50;
+int intervalCoil				= 100;
 
 bool motorState					= 0;
 unsigned long prevMotorTime		= 0;
@@ -200,7 +200,7 @@ void loop()
 
 void Coil()
 {
-	if (millis() - prevCoilTime > intervalCoil)
+	if (millis() - prevCoilTime >= intervalCoil)
 	{
 		prevCoilTime = millis();
 		if (coilState)
@@ -214,7 +214,7 @@ void Coil()
 
 void Motor()
 {
-	if (millis() - prevMotorTime > intervalMotor)
+	if (millis() - prevMotorTime >= intervalMotor)
 	{
 		prevMotorTime = millis();
 		if (motorState)
@@ -228,7 +228,7 @@ void Motor()
 
 void LedOK()
 {
-	if (millis() - prevLedOKTime > intervalLedOK)
+	if (millis() - prevLedOKTime >= intervalLedOK)
 	{
 		prevLedOKTime = millis();
 		if (ledOKState)
@@ -242,7 +242,7 @@ void LedOK()
 
 void LedNOK()
 {
-	if (millis() - prevLedNOKTime > intervalLedNOK)
+	if (millis() - prevLedNOKTime >= intervalLedNOK)
 	{
 		prevLedNOKTime = millis();
 		if (ledNOKState)
