@@ -36,15 +36,14 @@ bool switchTesterState			= 0;
 
 bool buzzerState				= 0;
 bool buzzerOK					= 0;
-//int buzzerDelay					= 150;
+int buzzerDelay					= 150;
 int buzzerFrequencyOK			= 4300;
 int buzzerFrequencyNOK			= 1300;
 
-// Attach a new CmdMessenger object to the default Serial port
+
 CmdMessenger cmdMessenger = CmdMessenger(Serial);
 
 // -------------- COMMANDS --------------
-//1. Dodaj komende do enuma
 enum
 {
 	kAcknowledge,
@@ -62,8 +61,6 @@ enum
 	kBuzzer,
 };
 
-// Callbacks define on which received commands we take action
-//2. Przypisz callback do metody
 void attachCommandCallbacks()
 {
 	// Attach callback methods
@@ -82,7 +79,6 @@ void attachCommandCallbacks()
 }
 
 // Called when a received command has no attached function
-//3. Napisz funkcje
 void OnUnknownCommand()
 {
 	cmdMessenger.sendCmd(kError, "Command without attached callback");
@@ -195,8 +191,6 @@ void loop()
 	LedNOK();
 	Buzzer();
 }
-
-// 4. Funkcja zmieniajaca dane pinu w czasie
 
 void Coil()
 {
